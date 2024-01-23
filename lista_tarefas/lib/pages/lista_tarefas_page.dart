@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ListaTarefasPage extends StatelessWidget {
-  ListaTarefasPage({super.key});
-
-  final TextEditingController emailController = TextEditingController();
+  const ListaTarefasPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,34 +9,26 @@ class ListaTarefasPage extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: Row(
             children: [
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'E-mail',
-                  hintText: 'exemplo@gmail.com',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                style: const TextStyle(
-                  fontSize: 20,
+              const Expanded(
+                child: TextField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Adicione uma tarefa.',
+                    hintText: 'Ex: Estudar Flutter',
+                  ),
                 ),
               ),
+              const SizedBox(width: 8),
               ElevatedButton(
-                onPressed: login,
-                child: const Text('Entrar'),
+                onPressed: () {},
+                child: const Text('+'),
               ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  void login() {
-    String text = emailController.text;
-    print(text);
   }
 }
