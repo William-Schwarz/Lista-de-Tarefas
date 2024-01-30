@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
-class ListaTarefasPage extends StatelessWidget {
-  const ListaTarefasPage({super.key});
+class ListaTarefasPage extends StatefulWidget {
+  const ListaTarefasPage({Key? key}) : super(key: key);
+
+  @override
+  State<ListaTarefasPage> createState() => _ListaTarefasPageState();
+}
+
+class _ListaTarefasPageState extends State<ListaTarefasPage> {
+  final TextEditingController todoController = TextEditingController();
+
+  List<String> todos = [];
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +23,10 @@ class ListaTarefasPage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: TextField(
-                      decoration: InputDecoration(
+                      controller: todoController,
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderSide: BorderSide(
                             color: Color(0xff00d7f3),
@@ -29,10 +39,17 @@ class ListaTarefasPage extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      String text = todoController.text;
+                      setState(() {
+                        todos.add(text);
+                      });
+                      todoController.clear();
+                    },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       backgroundColor: const Color(0xff00d7f3),
                       padding: const EdgeInsets.all(14),
                     ),
@@ -47,21 +64,43 @@ class ListaTarefasPage extends StatelessWidget {
               const SizedBox(
                 height: 25,
               ),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: todos.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text(todos[index]),
+                      onTap: () {
+                        print('Tarefa: ${todos[index]}');
+                      },
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 25,
+              ),
               Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Você possui 0 tarefas pendentes',
+                      'Você possui ${todos.length} tarefas pendentes',
                     ),
                   ),
                   const SizedBox(
                     width: 16,
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        todos.clear();
+                      });
+                    },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       backgroundColor: const Color(0xff00d7f3),
                       padding: const EdgeInsets.all(14),
                     ),
