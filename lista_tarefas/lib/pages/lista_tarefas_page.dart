@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lista_tarefas/widgets/todo_list_item.dart';
 
 class ListaTarefasPage extends StatefulWidget {
   const ListaTarefasPage({Key? key}) : super(key: key);
@@ -14,104 +15,103 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: todoController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xff00d7f3),
+    return SafeArea(
+      child: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: todoController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xff00d7f3),
+                            ),
                           ),
+                          labelText: 'Adicione uma tarefa.',
+                          hintText: 'Ex: Estudar Flutter',
                         ),
-                        labelText: 'Adicione uma tarefa.',
-                        hintText: 'Ex: Estudar Flutter',
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      String text = todoController.text;
-                      setState(() {
-                        todos.add(text);
-                      });
-                      todoController.clear();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      backgroundColor: const Color(0xff00d7f3),
-                      padding: const EdgeInsets.all(14),
-                    ),
-                    child: const Icon(
-                      Icons.add,
-                      size: 30,
-                      color: Color(0xffffffff),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: todos.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      title: Text(todos[index]),
-                      onTap: () {
-                        print('Tarefa: ${todos[index]}');
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        String text = todoController.text;
+                        setState(() {
+                          todos.add(text);
+                        });
+                        todoController.clear();
                       },
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Você possui ${todos.length} tarefas pendentes',
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        todos.clear();
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: const Color(0xff00d7f3),
+                        padding: const EdgeInsets.all(14),
                       ),
-                      backgroundColor: const Color(0xff00d7f3),
-                      padding: const EdgeInsets.all(14),
+                      child: const Icon(
+                        Icons.add,
+                        size: 30,
+                        color: Color(0xffffffff),
+                      ),
                     ),
-                    child: const Text(
-                      'Limpar tudo',
-                      style: TextStyle(color: Color(0xffffffff)),
-                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (String todo in todos)
+                        TodoListItem(
+                          title: todo,
+                        ),
+                    ],
                   ),
-                ],
-              )
-            ],
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Você possui ${todos.length} tarefas pendentes',
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          todos.clear();
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: const Color(0xff00d7f3),
+                        padding: const EdgeInsets.all(14),
+                      ),
+                      child: const Text(
+                        'Limpar tudo',
+                        style: TextStyle(color: Color(0xffffffff)),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
