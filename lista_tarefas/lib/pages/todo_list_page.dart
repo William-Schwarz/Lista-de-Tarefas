@@ -78,6 +78,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
                       for (Todo todo in todos)
                         TodoListItem(
                           todo: todo,
+                          onDelete: onDelete,
                         ),
                     ],
                   ),
@@ -121,5 +122,11 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
         ),
       ),
     );
+  }
+
+  void onDelete(Todo todo) {
+    setState(() {
+      todos.remove(todo);
+    });
   }
 }
