@@ -13,6 +13,8 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
   final TextEditingController todoController = TextEditingController();
 
   List<Todo> todos = [];
+  Todo? deletedTodo;
+  int? deletedTodoPos;
 
   @override
   Widget build(BuildContext context) {
@@ -98,9 +100,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        setState(() {
-                          todos.clear();
-                        });
+                        showDeleteTodosConfirmationDialog(); // Correção aqui
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -125,8 +125,73 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
   }
 
   void onDelete(Todo todo) {
+    deletedTodo = todo;
+    deletedTodoPos = todos.indexOf(todo);
+
     setState(() {
       todos.remove(todo);
+    });
+
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Tarefa ${todo.title} foi removida com sucesso!',
+          style: const TextStyle(
+            color: Color(0xff00d7f3),
+          ),
+        ),
+        backgroundColor: const Color.fromARGB(255, 255, 25, 25),
+        action: SnackBarAction(
+          label: 'Desfazer',
+          onPressed: () {
+            setState(
+              () {
+                todos.insert(deletedTodoPos!, deletedTodo!);
+              },
+            );
+          },
+        ),
+        duration: const Duration(seconds: 5),
+      ),
+    );
+  }
+
+  void showDeleteTodosConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Limpar Tudo?'),
+        content:
+            const Text('Você tem certeza que deseja apagar todas as tarefas?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: const Color(0xff00d7f3),
+            ),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              deleteAllTodos();
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: const Color.fromARGB(255, 255, 25, 25),
+            ),
+            child: const Text('Limpar Tudo'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void deleteAllTodos() {
+    setState(() {
+      todos.clear();
     });
   }
 }
