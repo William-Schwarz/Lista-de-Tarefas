@@ -46,14 +46,31 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
                     ElevatedButton(
                       onPressed: () {
                         String text = todoController.text;
-                        setState(() {
-                          Todo newTodo = Todo(
-                            title: text,
-                            dateTime: DateTime.now(),
+                        if (text.isNotEmpty) {
+                          setState(() {
+                            Todo newTodo = Todo(
+                              title: text,
+                              dateTime: DateTime.now(),
+                            );
+                            todos.add(newTodo);
+                          });
+                          todoController.clear();
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Erro!'),
+                              content: const Text(
+                                  'Por favor, adicione um título para a tarefa.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            ),
                           );
-                          todos.add(newTodo);
-                        });
-                        todoController.clear();
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
