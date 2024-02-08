@@ -1,17 +1,21 @@
 import 'package:intl/intl.dart';
 
 class Todo {
-  Todo({required this.title, required DateTime dateTime})
-      : dateTime = dateTime.toLocal();
+  Todo({required this.title, required this.dateTime});
 
   String title;
   DateTime dateTime;
 
-  String formattedDateTime() {
-    return DateFormat('dd/MM/yyyy - HH:mm').format(dateTime);
-  }
+  Todo.fromJson(Map<String, dynamic> json)
+      : title = json['title'] ?? '',
+        dateTime = json['dateTime'] != null
+            ? DateFormat('dd/MM/yyyy HH:mm').parse(json['dateTime'])
+            : DateTime.now();
 
-  bool isValid() {
-    return title.isNotEmpty;
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'dateTime': DateFormat('dd/MM/yyyy HH:mm').format(dateTime),
+    };
   }
 }

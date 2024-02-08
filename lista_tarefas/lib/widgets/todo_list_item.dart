@@ -43,7 +43,7 @@ class TodoListItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                todo.formattedDateTime(),
+                todo.dateTime.toString(),
                 style: const TextStyle(
                   fontSize: 12,
                 ),

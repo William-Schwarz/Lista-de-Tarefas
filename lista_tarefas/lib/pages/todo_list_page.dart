@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lista_tarefas/models/todo.dart';
+import 'package:lista_tarefas/repositories/todo_repository.dart';
 import 'package:lista_tarefas/widgets/todo_list_item.dart';
 
 class ListaTarefasPage extends StatefulWidget {
@@ -11,10 +12,22 @@ class ListaTarefasPage extends StatefulWidget {
 
 class _ListaTarefasPageState extends State<ListaTarefasPage> {
   final TextEditingController todoController = TextEditingController();
+  final TodoRepository todoRepository = TodoRepository();
 
   List<Todo> todos = [];
   Todo? deletedTodo;
   int? deletedTodoPos;
+  String? errorText;
+
+  @override
+  void initState() {
+    super.initState();
+    todoRepository.getTodoList().then((value) {
+      setState(() {
+        todos = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +44,24 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
                     Expanded(
                       child: TextField(
                         controller: todoController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(
                             borderSide: BorderSide(
                               color: Color(0xff00d7f3),
                             ),
                           ),
                           labelText: 'Adicione uma tarefa.',
                           hintText: 'Ex: Estudar Flutter',
+                          errorText: errorText,
+                          focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xff00d7f3),
+                              width: 2,
+                            ),
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Color(0xff00d7f3),
+                          ),
                         ),
                       ),
                     ),
@@ -46,31 +69,22 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
                     ElevatedButton(
                       onPressed: () {
                         String text = todoController.text;
-                        if (text.isNotEmpty) {
+                        if (text.isEmpty) {
                           setState(() {
-                            Todo newTodo = Todo(
-                              title: text,
-                              dateTime: DateTime.now(),
-                            );
-                            todos.add(newTodo);
+                            errorText = 'O título não pode ser vazio!';
                           });
-                          todoController.clear();
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Erro!'),
-                              content: const Text(
-                                  'Por favor, adicione um título para a tarefa.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            ),
-                          );
+                          return;
                         }
+                        setState(() {
+                          Todo newTodo = Todo(
+                            title: text,
+                            dateTime: DateTime.now(),
+                          );
+                          todos.add(newTodo);
+                          errorText = null;
+                        });
+                        todoController.clear();
+                        todoRepository.saveTodoList(todos);
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -148,6 +162,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
     setState(() {
       todos.remove(todo);
     });
+    todoRepository.saveTodoList(todos);
 
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -167,6 +182,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
                 todos.insert(deletedTodoPos!, deletedTodo!);
               },
             );
+            todoRepository.saveTodoList(todos);
           },
         ),
         duration: const Duration(seconds: 5),
@@ -210,5 +226,6 @@ class _ListaTarefasPageState extends State<ListaTarefasPage> {
     setState(() {
       todos.clear();
     });
+    todoRepository.saveTodoList(todos);
   }
 }
