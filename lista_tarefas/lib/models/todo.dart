@@ -8,9 +8,7 @@ class Todo {
 
   Todo.fromJson(Map<String, dynamic> json)
       : title = json['title'] ?? '',
-        dateTime = json['dateTime'] != null
-            ? DateFormat('dd/MM/yyyy HH:mm').parse(json['dateTime'])
-            : DateTime.now();
+        dateTime = DateTime.parse(json['dateTime'] ?? '');
 
   Map<String, dynamic> toJson() {
     return {
