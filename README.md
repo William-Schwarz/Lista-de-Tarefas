@@ -15,5 +15,3 @@ Este é um aplicativo simples de **lista de tarefas** desenvolvido em Flutter. O
 - [Flutter](https://flutter.dev/)  
 - [Dart](https://dart.dev/)  
 - Gerenciamento de estado simples com `setState`.
-
-## 🧪 Como Rodar
